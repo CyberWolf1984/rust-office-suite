@@ -24,3 +24,17 @@ glam = "0.29"
 log = "0.4"
 env_logger = "0.11"
 thiserror = "2"
+criterion = "0.5"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[workspace.lints.clippy]
+all = "warn"
+pedantic = "warn"
+perf = "warn"
+style = "warn"
+complexity = "warn"
+cargo = "warn"
+unwrap_used = "warn"

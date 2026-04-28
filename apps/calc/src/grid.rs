@@ -43,6 +43,17 @@ impl Grid {
     }
 
     /// Number of populated cells.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use calc::grid::Grid;
+    /// use calc::cell::CellAddress;
+    /// let mut grid = Grid::new();
+    /// assert_eq!(grid.populated_count(), 0);
+    /// grid.set_input(CellAddress::new(0, 0), "123".into());
+    /// assert_eq!(grid.populated_count(), 1);
+    /// ```
     pub fn populated_count(&self) -> usize {
         self.cells.len()
     }
@@ -50,5 +61,27 @@ impl Grid {
     /// Remove a cell (clearing it).
     pub fn clear_cell(&mut self, addr: CellAddress) {
         self.cells.remove(&addr);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_grid_operations() {
+        let mut grid = Grid::new();
+        let addr = CellAddress::new(0, 0); // A1
+        
+        assert!(grid.get(addr).is_none());
+        assert_eq!(grid.populated_count(), 0);
+
+        grid.set_input(addr, "42".into());
+        assert_eq!(grid.populated_count(), 1);
+        assert_eq!(grid.get(addr).unwrap().input, "42");
+
+        grid.clear_cell(addr);
+        assert_eq!(grid.populated_count(), 0);
+        assert!(grid.get(addr).is_none());
     }
 }

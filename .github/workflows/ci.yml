@@ -1,0 +1,76 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build_and_test:
+    name: Build & Test
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        components: rustfmt, clippy
+
+    - name: Rust Cache
+      uses: Swatinem/rust-cache@v2
+
+    - name: Check Formatting
+      run: cargo fmt --all -- --check
+
+    - name: Run Clippy
+      run: cargo clippy --all-targets --all-features -- -D warnings
+
+    - name: Build
+      run: cargo build --verbose
+
+    - name: Run Tests (Unit & Integration)
+      run: cargo test --verbose
+
+    - name: Run Doc Tests
+      run: cargo test --doc
+
+    - name: Benchmark Stub
+      # Just verify that benchmarks compile
+      run: cargo bench --no-run
+
+  package:
+    name: Package MSI
+    runs-on: windows-latest
+    needs: build_and_test
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Setup .NET (for WiX)
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Install WiX Toolset
+      run: |
+        dotnet tool install -g wix --version 5.0.2
+        wix extension add WixToolset.UI.wixext/5.0.2
+
+    - name: Build Installer
+      run: .\build.bat release
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Rust-Office-Installer
+        path: target/rust-office.msi

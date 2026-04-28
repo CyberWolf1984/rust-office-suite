@@ -12,3 +12,16 @@ log = { workspace = true }
 thiserror = { workspace = true }
 libsal_rs = { path = "../libsal_rs" }
 libsfx2_rs = { path = "../libsfx2_rs" }
+
+[features]
+default = ["pdf_export"]
+pdf_export = []
+ooxml = []
+odf = []
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "pdf_bench"
+harness = false
