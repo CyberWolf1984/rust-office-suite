@@ -83,23 +83,31 @@ cargo run -p launcher -- --calc
 
 ## Installing on Windows
 
-### Option A: Build and Package the MSI Installer
+### Option A: GUI Installer (recommended)
 
-The included `build.bat` script compiles a release build and packages it into a Windows `.msi` installer:
+The included `build.bat` script compiles a release build and packages it into a Windows `.msi` installer with a full graphical setup wizard:
 
 ```cmd
 build.bat release
 ```
 
-This will:
-1. Compile all binaries in release mode.
-2. Run `wix build` to produce `target/rust-office.msi`.
+Then double-click `target/rust-office.msi` to launch the installer. The setup wizard walks you through:
 
-Then double-click `target/rust-office.msi` to install. The installer will:
-- Copy all binaries to `C:\Program Files\RustOffice\bin\`.
-- Create **Start Menu shortcuts** for Rust-Office, Writer, and Calc.
+1. **Welcome** — introduction screen.
+2. **License Agreement** — MPL-2.0 / LGPL / GPL terms (must accept to continue).
+3. **Custom Setup** — a feature tree where you can check/uncheck individual applications:
+   - ✅ **Writer** — Word processor (.odt, .docx)
+   - ✅ **Calc** — Spreadsheet (.ods, .xlsx)
+   - *(Future: Impress, Draw, Base, Math)*
+4. **Install Directory** — defaults to `C:\Program Files\RustOffice\`.
+5. **Installation Progress** — copies selected files.
+6. **Finish** — installation complete.
 
-To uninstall, use **Settings → Apps → Rust-Office → Uninstall**.
+The installer creates:
+- **Start Menu shortcuts** under `Rust-Office` for each selected app.
+- **Desktop shortcuts** for Writer and Calc.
+
+To uninstall, use **Settings → Apps → Rust-Office → Uninstall**, or re-run the `.msi`.
 
 ### Option B: Manual Install (no MSI)
 
@@ -107,7 +115,7 @@ To uninstall, use **Settings → Apps → Rust-Office → Uninstall**.
    ```bash
    cargo build --release
    ```
-2. Copy the three executables from `target/release/` to a directory of your choice (e.g. `C:\RustOffice\`):
+2. Copy the executables from `target/release/` to a directory of your choice (e.g. `C:\RustOffice\`):
    - `rust-office.exe`
    - `ro-writer.exe`
    - `ro-calc.exe`

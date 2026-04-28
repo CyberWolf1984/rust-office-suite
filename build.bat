@@ -3,18 +3,28 @@ REM =========================================================================
 REM  Rust-Office Build & Package Script (Windows)
 REM =========================================================================
 REM  Prerequisites:
-REM    1. Rust toolchain (rustup)     — https://rustup.rs
-REM    2. WiX Toolset v4 (dotnet)     — dotnet tool install -g wix
+REM    1. Rust toolchain (rustup)      — https://rustup.rs
+REM    2. WiX Toolset v4 (dotnet CLI)  — dotnet tool install -g wix
+REM    3. WiX UI extension             — wix extension add WixToolset.UI.wixext
 REM
 REM  Usage:
-REM    build.bat           — build debug binaries
-REM    build.bat release   — build release binaries + MSI installer
+REM    build.bat           — build debug binaries only
+REM    build.bat release   — build release binaries + GUI MSI installer
 REM =========================================================================
 
 set MODE=%1
 if "%MODE%"=="" set MODE=debug
 
-echo [1/3] Building Rust-Office (%MODE%) ...
+echo.
+echo ========================================
+echo  Rust-Office Build System
+echo ========================================
+echo.
+
+REM -----------------------------------------------------------------
+REM  Step 1: Compile
+REM -----------------------------------------------------------------
+echo [1/3] Compiling Rust-Office (%MODE%) ...
 
 if "%MODE%"=="release" (
     cargo build --release
@@ -25,22 +35,59 @@ if "%MODE%"=="release" (
 )
 
 if %ERRORLEVEL% NEQ 0 (
-    echo BUILD FAILED
+    echo.
+    echo  *** BUILD FAILED ***
     exit /b 1
 )
 
-echo [2/3] Build complete.  Binaries in %BIN_DIR%
+echo       Binaries written to %BIN_DIR%\
+echo.
 
+REM -----------------------------------------------------------------
+REM  Step 2: List built artefacts
+REM -----------------------------------------------------------------
+echo [2/3] Built artefacts:
+echo       - %BIN_DIR%\rust-office.exe   (Launcher)
+echo       - %BIN_DIR%\ro-writer.exe     (Writer)
+echo       - %BIN_DIR%\ro-calc.exe       (Calc)
+echo.
+
+REM -----------------------------------------------------------------
+REM  Step 3: Package MSI (release only)
+REM -----------------------------------------------------------------
 if "%MODE%"=="release" (
-    echo [3/3] Packaging MSI installer ...
-    wix build installer\wix\main.wxs -d BinDir=%BIN_DIR% -o target\rust-office.msi
+    echo [3/3] Packaging GUI installer (.msi) ...
+    echo.
+
+    REM Ensure the WiX UI extension is available
+    wix extension add WixToolset.UI.wixext 2>nul
+
+    wix build installer\wix\main.wxs ^
+        -ext WixToolset.UI.wixext ^
+        -d BinDir=%BIN_DIR% ^
+        -o target\rust-office.msi
+
     if %ERRORLEVEL% EQU 0 (
-        echo MSI created: target\rust-office.msi
+        echo.
+        echo  *** MSI installer created: target\rust-office.msi ***
+        echo.
+        echo  The installer provides:
+        echo    - Welcome screen
+        echo    - License agreement
+        echo    - Custom install (select Writer, Calc, etc.)
+        echo    - Install directory picker
+        echo    - Start Menu + Desktop shortcuts
     ) else (
-        echo MSI packaging failed — is WiX Toolset installed?
+        echo.
+        echo  *** MSI packaging failed ***
+        echo  Make sure WiX Toolset v4 is installed:
+        echo    dotnet tool install -g wix
+        echo    wix extension add WixToolset.UI.wixext
     )
 ) else (
     echo [3/3] Skipping MSI packaging (debug build).
+    echo       Run "build.bat release" to create the installer.
 )
 
+echo.
 echo Done.

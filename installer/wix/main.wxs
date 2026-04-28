@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    WiX v4 installer manifest for Rust-Office.
-    Builds a .msi package that installs:
-      - rust-office.exe  (launcher / start centre)
-      - ro-writer.exe    (Writer)
-      - ro-calc.exe      (Calc)
-    along with Start Menu shortcuts and file-type associations.
+    WiX v4 GUI Installer for Rust-Office.
 
-    Build with:  wix build installer/wix/main.wxs -o target/rust-office.msi
+    This installer mirrors the LibreOffice installation experience:
+      1. Welcome screen
+      2. License agreement (MPL-2.0 / LGPL)
+      3. Setup type selection (Typical / Custom)
+      4. Custom feature tree — choose which apps to install
+      5. Install directory picker
+      6. Installation progress
+      7. Finish screen
+
+    Build with:
+      wix extension add WixToolset.UI.wixext
+      wix build installer/wix/main.wxs -ext WixToolset.UI.wixext -o target/rust-office.msi
 -->
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
   <Package
     Name="Rust-Office"
@@ -21,7 +28,26 @@
     <MajorUpgrade
       DowngradeErrorMessage="A newer version of Rust-Office is already installed." />
 
-    <MediaTemplate EmbedCab="yes" />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <!-- ============================================================ -->
+    <!-- GUI: WixUI_FeatureTree                                        -->
+    <!--                                                               -->
+    <!-- Provides the full dialog sequence:                            -->
+    <!--   Welcome → License → Feature Selection → Directory → Install -->
+    <!--                                                               -->
+    <!-- The user can pick individual features (Writer, Calc, etc.)    -->
+    <!-- from a checkbox tree, just like the LibreOffice installer.    -->
+    <!-- ============================================================ -->
+    <ui:WixUI Id="WixUI_FeatureTree" />
+
+    <!-- License file shown in the License Agreement dialog.           -->
+    <WixVariable Id="WixUILicenseRtf" Value="installer\wix\License.rtf" />
+
+    <!-- Custom banner and background bitmaps (optional branding).     -->
+    <!-- Uncomment and supply your own images to brand the installer.  -->
+    <!-- <WixVariable Id="WixUIBannerBmp"  Value="installer\wix\banner.bmp" />  -->
+    <!-- <WixVariable Id="WixUIDialogBmp"  Value="installer\wix\dialog.bmp" />  -->
 
     <!-- ============================================================ -->
     <!-- Directory layout                                              -->
@@ -36,74 +62,175 @@
       <Directory Id="RustOfficeMenu" Name="Rust-Office" />
     </StandardDirectory>
 
-    <!-- ============================================================ -->
-    <!-- Components: binaries                                          -->
-    <!-- ============================================================ -->
-    <ComponentGroup Id="Binaries" Directory="BinDir">
+    <StandardDirectory Id="DesktopFolder" />
 
+    <!-- ============================================================ -->
+    <!-- Components: Core (always installed)                           -->
+    <!-- ============================================================ -->
+    <ComponentGroup Id="CoreComponents" Directory="BinDir">
       <Component Id="Launcher">
-        <File Id="LauncherExe" Source="$(var.BinDir)\rust-office.exe" KeyPath="yes" />
+        <File Id="LauncherExe"
+              Source="$(var.BinDir)\rust-office.exe"
+              KeyPath="yes" />
       </Component>
-
-      <Component Id="Writer">
-        <File Id="WriterExe" Source="$(var.BinDir)\ro-writer.exe" KeyPath="yes" />
-      </Component>
-
-      <Component Id="Calc">
-        <File Id="CalcExe" Source="$(var.BinDir)\ro-calc.exe" KeyPath="yes" />
-      </Component>
-
     </ComponentGroup>
 
-    <!-- ============================================================ -->
-    <!-- Components: Start Menu shortcuts                              -->
-    <!-- ============================================================ -->
-    <ComponentGroup Id="Shortcuts" Directory="RustOfficeMenu">
-
+    <ComponentGroup Id="CoreShortcuts" Directory="RustOfficeMenu">
       <Component Id="LauncherShortcut">
         <Shortcut Id="LauncherStartMenu"
                   Name="Rust-Office"
+                  Description="Open the Rust-Office Start Centre"
                   Target="[BinDir]rust-office.exe"
-                  WorkingDirectory="BinDir" />
+                  WorkingDirectory="BinDir"
+                  Icon="RustOfficeIcon" />
         <RegistryValue Root="HKCU"
                        Key="Software\RustOffice"
                        Name="LauncherShortcut"
                        Type="integer" Value="1"
                        KeyPath="yes" />
+        <RemoveFolder Id="RemoveRustOfficeMenu" On="uninstall" />
       </Component>
+    </ComponentGroup>
 
-      <Component Id="WriterShortcut">
+    <!-- ============================================================ -->
+    <!-- Components: Writer                                            -->
+    <!-- ============================================================ -->
+    <ComponentGroup Id="WriterBinary" Directory="BinDir">
+      <Component Id="WriterExeComp">
+        <File Id="WriterExe"
+              Source="$(var.BinDir)\ro-writer.exe"
+              KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="WriterShortcuts" Directory="RustOfficeMenu">
+      <Component Id="WriterShortcutComp">
         <Shortcut Id="WriterStartMenu"
                   Name="Rust-Office Writer"
+                  Description="Word processor"
                   Target="[BinDir]ro-writer.exe"
-                  WorkingDirectory="BinDir" />
+                  WorkingDirectory="BinDir"
+                  Icon="WriterIcon" />
         <RegistryValue Root="HKCU"
                        Key="Software\RustOffice"
                        Name="WriterShortcut"
                        Type="integer" Value="1"
                        KeyPath="yes" />
       </Component>
+    </ComponentGroup>
 
-      <Component Id="CalcShortcut">
+    <ComponentGroup Id="WriterDesktop" Directory="DesktopFolder">
+      <Component Id="WriterDesktopShortcut">
+        <Shortcut Id="WriterDesktop"
+                  Name="Rust-Office Writer"
+                  Description="Word processor"
+                  Target="[BinDir]ro-writer.exe"
+                  WorkingDirectory="BinDir"
+                  Icon="WriterIcon" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\RustOffice"
+                       Name="WriterDesktopShortcut"
+                       Type="integer" Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- ============================================================ -->
+    <!-- Components: Calc                                              -->
+    <!-- ============================================================ -->
+    <ComponentGroup Id="CalcBinary" Directory="BinDir">
+      <Component Id="CalcExeComp">
+        <File Id="CalcExe"
+              Source="$(var.BinDir)\ro-calc.exe"
+              KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="CalcShortcuts" Directory="RustOfficeMenu">
+      <Component Id="CalcShortcutComp">
         <Shortcut Id="CalcStartMenu"
                   Name="Rust-Office Calc"
+                  Description="Spreadsheet"
                   Target="[BinDir]ro-calc.exe"
-                  WorkingDirectory="BinDir" />
+                  WorkingDirectory="BinDir"
+                  Icon="CalcIcon" />
         <RegistryValue Root="HKCU"
                        Key="Software\RustOffice"
                        Name="CalcShortcut"
                        Type="integer" Value="1"
                        KeyPath="yes" />
       </Component>
+    </ComponentGroup>
 
+    <ComponentGroup Id="CalcDesktop" Directory="DesktopFolder">
+      <Component Id="CalcDesktopShortcut">
+        <Shortcut Id="CalcDesktop"
+                  Name="Rust-Office Calc"
+                  Description="Spreadsheet"
+                  Target="[BinDir]ro-calc.exe"
+                  WorkingDirectory="BinDir"
+                  Icon="CalcIcon" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\RustOffice"
+                       Name="CalcDesktopShortcut"
+                       Type="integer" Value="1"
+                       KeyPath="yes" />
+      </Component>
     </ComponentGroup>
 
     <!-- ============================================================ -->
-    <!-- Feature tree                                                  -->
+    <!-- Icons for shortcuts                                           -->
     <!-- ============================================================ -->
-    <Feature Id="Complete" Title="Rust-Office" Level="1">
-      <ComponentGroupRef Id="Binaries" />
-      <ComponentGroupRef Id="Shortcuts" />
+    <Icon Id="RustOfficeIcon" SourceFile="$(var.BinDir)\rust-office.exe" />
+    <Icon Id="WriterIcon"     SourceFile="$(var.BinDir)\ro-writer.exe" />
+    <Icon Id="CalcIcon"       SourceFile="$(var.BinDir)\ro-calc.exe" />
+
+    <!-- ============================================================ -->
+    <!-- Feature tree (shown in the GUI custom-install dialog)         -->
+    <!--                                                               -->
+    <!-- Level="1" = installed by default                               -->
+    <!-- Level="2" = not installed by default (user opt-in)            -->
+    <!--                                                               -->
+    <!-- The user sees a tree of checkboxes and can toggle each app.  -->
+    <!-- ============================================================ -->
+    <Feature Id="ProductFeature"
+             Title="Rust-Office"
+             Description="The Rust-Office productivity suite."
+             Display="expand"
+             Level="1"
+             AllowAbsent="no">
+
+      <!-- Core — always installed, hidden from the user -->
+      <ComponentGroupRef Id="CoreComponents" />
+      <ComponentGroupRef Id="CoreShortcuts" />
+
+      <!-- Writer — selectable -->
+      <Feature Id="WriterFeature"
+               Title="Writer"
+               Description="A modern word processor for documents, letters, and reports. Supports .odt and .docx formats."
+               Level="1"
+               AllowAbsent="yes">
+        <ComponentGroupRef Id="WriterBinary" />
+        <ComponentGroupRef Id="WriterShortcuts" />
+        <ComponentGroupRef Id="WriterDesktop" />
+      </Feature>
+
+      <!-- Calc — selectable -->
+      <Feature Id="CalcFeature"
+               Title="Calc"
+               Description="A powerful spreadsheet application with formula evaluation and charting. Supports .ods and .xlsx formats."
+               Level="1"
+               AllowAbsent="yes">
+        <ComponentGroupRef Id="CalcBinary" />
+        <ComponentGroupRef Id="CalcShortcuts" />
+        <ComponentGroupRef Id="CalcDesktop" />
+      </Feature>
+
+      <!--
+        Future apps (Impress, Draw, Base, Math) go here as additional
+        <Feature> blocks. Each can be toggled independently.
+      -->
+
     </Feature>
 
   </Package>
