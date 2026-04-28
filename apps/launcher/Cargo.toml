@@ -1,0 +1,13 @@
+[package]
+name = "launcher"
+version = "0.1.0"
+edition = "2021"
+description = "Rust-Office Launcher — unified entry point (like soffice)"
+
+[[bin]]
+name = "rust-office"
+path = "src/main.rs"
+
+[dependencies]
+log = { workspace = true }
+env_logger = { workspace = true }

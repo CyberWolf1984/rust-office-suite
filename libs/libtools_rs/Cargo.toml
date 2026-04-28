@@ -2,5 +2,8 @@
 name = "libtools_rs"
 version = "0.1.0"
 edition = "2021"
+description = "Core toolkit types — Rectangle, Color, units, and math primitives"
 
 [dependencies]
+glam = { workspace = true }
+serde = { workspace = true }

@@ -1,0 +1,12 @@
+[package]
+name = "libsfx2_rs"
+version = "0.1.0"
+edition = "2021"
+description = "Core application framework — document lifecycle, commands, and undo/redo"
+
+[dependencies]
+log = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }
+libsal_rs = { path = "../libsal_rs" }
+libtools_rs = { path = "../libtools_rs" }

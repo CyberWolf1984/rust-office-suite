@@ -1,0 +1,10 @@
+C:\Users\conor\OneDrive\Desktop\rust-office\rust-office-suite\target\debug\deps\wgpu_types-a17c1a812bf9245d.d: C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\lib.rs C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\assertions.rs C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\counters.rs C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\env.rs C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\instance.rs C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\math.rs
+
+C:\Users\conor\OneDrive\Desktop\rust-office\rust-office-suite\target\debug\deps\libwgpu_types-a17c1a812bf9245d.rmeta: C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\lib.rs C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\assertions.rs C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\counters.rs C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\env.rs C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\instance.rs C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\math.rs
+
+C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\lib.rs:
+C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\assertions.rs:
+C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\counters.rs:
+C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\env.rs:
+C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\instance.rs:
+C:\Users\conor\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wgpu-types-24.0.0\src\math.rs:

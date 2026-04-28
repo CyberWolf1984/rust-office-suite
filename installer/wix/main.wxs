@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    WiX v4 installer manifest for Rust-Office.
+    Builds a .msi package that installs:
+      - rust-office.exe  (launcher / start centre)
+      - ro-writer.exe    (Writer)
+      - ro-calc.exe      (Calc)
+    along with Start Menu shortcuts and file-type associations.
+
+    Build with:  wix build installer/wix/main.wxs -o target/rust-office.msi
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+  <Package
+    Name="Rust-Office"
+    Manufacturer="Rust-Office Contributors"
+    Version="0.1.0"
+    UpgradeCode="A1B2C3D4-E5F6-7890-ABCD-EF1234567890"
+    Scope="perMachine">
+
+    <MajorUpgrade
+      DowngradeErrorMessage="A newer version of Rust-Office is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- ============================================================ -->
+    <!-- Directory layout                                              -->
+    <!-- ============================================================ -->
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="INSTALLFOLDER" Name="RustOffice">
+        <Directory Id="BinDir" Name="bin" />
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="RustOfficeMenu" Name="Rust-Office" />
+    </StandardDirectory>
+
+    <!-- ============================================================ -->
+    <!-- Components: binaries                                          -->
+    <!-- ============================================================ -->
+    <ComponentGroup Id="Binaries" Directory="BinDir">
+
+      <Component Id="Launcher">
+        <File Id="LauncherExe" Source="$(var.BinDir)\rust-office.exe" KeyPath="yes" />
+      </Component>
+
+      <Component Id="Writer">
+        <File Id="WriterExe" Source="$(var.BinDir)\ro-writer.exe" KeyPath="yes" />
+      </Component>
+
+      <Component Id="Calc">
+        <File Id="CalcExe" Source="$(var.BinDir)\ro-calc.exe" KeyPath="yes" />
+      </Component>
+
+    </ComponentGroup>
+
+    <!-- ============================================================ -->
+    <!-- Components: Start Menu shortcuts                              -->
+    <!-- ============================================================ -->
+    <ComponentGroup Id="Shortcuts" Directory="RustOfficeMenu">
+
+      <Component Id="LauncherShortcut">
+        <Shortcut Id="LauncherStartMenu"
+                  Name="Rust-Office"
+                  Target="[BinDir]rust-office.exe"
+                  WorkingDirectory="BinDir" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\RustOffice"
+                       Name="LauncherShortcut"
+                       Type="integer" Value="1"
+                       KeyPath="yes" />
+      </Component>
+
+      <Component Id="WriterShortcut">
+        <Shortcut Id="WriterStartMenu"
+                  Name="Rust-Office Writer"
+                  Target="[BinDir]ro-writer.exe"
+                  WorkingDirectory="BinDir" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\RustOffice"
+                       Name="WriterShortcut"
+                       Type="integer" Value="1"
+                       KeyPath="yes" />
+      </Component>
+
+      <Component Id="CalcShortcut">
+        <Shortcut Id="CalcStartMenu"
+                  Name="Rust-Office Calc"
+                  Target="[BinDir]ro-calc.exe"
+                  WorkingDirectory="BinDir" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\RustOffice"
+                       Name="CalcShortcut"
+                       Type="integer" Value="1"
+                       KeyPath="yes" />
+      </Component>
+
+    </ComponentGroup>
+
+    <!-- ============================================================ -->
+    <!-- Feature tree                                                  -->
+    <!-- ============================================================ -->
+    <Feature Id="Complete" Title="Rust-Office" Level="1">
+      <ComponentGroupRef Id="Binaries" />
+      <ComponentGroupRef Id="Shortcuts" />
+    </Feature>
+
+  </Package>
+</Wix>

@@ -1,0 +1,14 @@
+[package]
+name = "libformat_rs"
+version = "0.1.0"
+edition = "2021"
+description = "Document format parsers — ODF, OOXML, plain text, CSV"
+
+[dependencies]
+quick-xml = { workspace = true }
+zip = { workspace = true }
+serde = { workspace = true }
+log = { workspace = true }
+thiserror = { workspace = true }
+libsal_rs = { path = "../libsal_rs" }
+libsfx2_rs = { path = "../libsfx2_rs" }

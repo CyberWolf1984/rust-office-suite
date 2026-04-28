@@ -1,6 +1,17 @@
+//! # Rust-Office Writer
+//!
+//! The word-processor application.  Manages the text-buffer, layout engine,
+//! and document model for rich-text editing.
+
+mod app;
+mod doc_model;
+mod layout;
+mod text_buffer;
+
 fn main() {
-    libsal_rs::init_sal();
-    libtools_rs::init_tools();
-    libvcl_rs::init_vcl();
-    println!("Writer started.");
+    env_logger::init();
+    log::info!("Rust-Office Writer starting");
+
+    libsal_rs::init();
+    app::run();
 }

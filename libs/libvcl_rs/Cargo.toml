@@ -2,7 +2,12 @@
 name = "libvcl_rs"
 version = "0.1.0"
 edition = "2021"
+description = "Visual Class Library — WGPU-based rendering and widget toolkit"
 
 [dependencies]
-wgpu = "0.19"
-libsal_rs = { path = "../libsal_rs" }
+wgpu = { workspace = true }
+winit = { workspace = true }
+glam = { workspace = true }
+log = { workspace = true }
+thiserror = { workspace = true }
+libtools_rs = { path = "../libtools_rs" }

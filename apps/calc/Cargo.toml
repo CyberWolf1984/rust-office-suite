@@ -1,0 +1,20 @@
+[package]
+name = "calc"
+version = "0.1.0"
+edition = "2021"
+description = "Rust-Office Calc — Spreadsheet application"
+
+[[bin]]
+name = "ro-calc"
+path = "src/main.rs"
+
+[dependencies]
+log = { workspace = true }
+env_logger = { workspace = true }
+serde = { workspace = true }
+rayon = { workspace = true }
+libsal_rs = { path = "../../libs/libsal_rs" }
+libtools_rs = { path = "../../libs/libtools_rs" }
+libvcl_rs = { path = "../../libs/libvcl_rs" }
+libsfx2_rs = { path = "../../libs/libsfx2_rs" }
+libformat_rs = { path = "../../libs/libformat_rs" }

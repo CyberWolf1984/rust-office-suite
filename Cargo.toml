@@ -3,6 +3,24 @@ members = [
     "libs/libsal_rs",
     "libs/libtools_rs",
     "libs/libvcl_rs",
+    "libs/libsfx2_rs",
+    "libs/libformat_rs",
     "apps/writer",
+    "apps/calc",
+    "apps/launcher",
 ]
 resolver = "2"
+
+[workspace.dependencies]
+memmap2 = "0.9"
+tokio = { version = "1", features = ["full"] }
+wgpu = "24"
+winit = "0.30"
+serde = { version = "1", features = ["derive"] }
+quick-xml = { version = "0.36", features = ["serialize"] }
+zip = "2"
+rayon = "1.10"
+glam = "0.29"
+log = "0.4"
+env_logger = "0.11"
+thiserror = "2"

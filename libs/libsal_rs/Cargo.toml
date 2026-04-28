@@ -2,7 +2,10 @@
 name = "libsal_rs"
 version = "0.1.0"
 edition = "2021"
+description = "System Abstraction Layer — zero-copy I/O, threading, and OS primitives"
 
 [dependencies]
-memmap2 = "0.9"
-tokio = { version = "1.0", features = ["full"] }
+memmap2 = { workspace = true }
+tokio = { workspace = true }
+log = { workspace = true }
+thiserror = { workspace = true }
