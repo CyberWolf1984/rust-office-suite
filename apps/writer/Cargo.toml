@@ -1,0 +1,9 @@
+[package]
+name = "writer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+libsal_rs = { path = "../../libs/libsal_rs" }
+libtools_rs = { path = "../../libs/libtools_rs" }
+libvcl_rs = { path = "../../libs/libvcl_rs" }

@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "libs/libsal_rs",
+    "libs/libtools_rs",
+    "libs/libvcl_rs",
+    "apps/writer",
+]
+resolver = "2"
