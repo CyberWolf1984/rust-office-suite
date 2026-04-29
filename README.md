@@ -46,7 +46,7 @@ cd rust-office-suite
 cargo build
 ```
 
-Binaries will be placed in `target/debug/`:
+Binaries will be placed in `target/debug/` (without the .exe extension on Linux):
 - `rust-office.exe` — Launcher / Start Centre
 - `ro-writer.exe` — Writer (word processor)
 - `ro-calc.exe` — Calc (spreadsheet)
